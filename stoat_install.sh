@@ -1,4 +1,10 @@
+# All variables below this line can be edited to customize your installation.
+
 VERSION=1.3.0 # Fallback version if auto latest release detection is not used. This can be changed if necessary.
+INSTALL_PATH="$HOME/.local/bin/"
+ICON_PATH="$INSTALL_PATH/Stoat-linux-x64/icon.ico"
+
+# Don't touch anything below here unless you know what you are doing.
 
 echo "Welcome to this basic Stoat install/update script for Linux."
 echo "Would you like to find the latest release available ? If not, the script will default to version $VERSION."
@@ -18,14 +24,7 @@ else
     echo "Defaulting to version $VERSION. This can be changed on the first line of the script."
 fi
 
-# All variables below this line can be edited to customize your installation.
-
-INSTALL_PATH="$HOME/.local/bin/"
 FILE="Stoat-linux-x64-$VERSION.zip"
-ICON_PATH="$INSTALL_PATH/Stoat-linux-x64/icon.ico"
-
-# Don't touch anything below here unless you know what you are doing.
-
 RELEASE_URL="https://github.com/stoatchat/for-desktop/releases/download/v$VERSION/Stoat-linux-x64-$VERSION.zip"
 ICON_URL="https://raw.githubusercontent.com/stoatchat/assets/refs/heads/main/desktop/icon.ico"
 DESKTOP_FILE="$HOME/.local/share/applications/stoat.desktop"
