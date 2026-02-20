@@ -1,36 +1,47 @@
-# All these variables can be edited to customize your installation.
+VERSION=1.3.0 # Fallback version if auto latest release detection is not used. This can be changed if necessary.
+
+echo "Welcome to this basic Stoat install/update script for Linux."
+echo "Would you like to find the latest release available ? If not, the script will default to version $VERSION."
+read -p "Search for latest release ? (Y/n): " ask
+echo ""
+if [ "$ask" != "n" ]; then
+    echo "Please wait while script finds the latest release version..."
+    FOUND_VERSION=$(searchitem=$(curl -v https://github.com/stoatchat/for-desktop 2>&1 | grep -E '\<span\sclass\=\"css-truncate\scss\-truncate-target\stext-bold\smr-2"\sstyle=\"max-width\:\snone\;\">v([0-9]\.[0-9]+\.[0-9]+)<\/span\>'); grep -Po '([0-9]\.[0-9]+\.[0-9]+)' <<< $searchitem)
+    if ! [[ "$FOUND_VERSION" =~ [0-9]\.[0-9]+\.[0-9]+ ]]; then
+        echo "Error retrieving latest version. Defaulting to $VERSION"
+    else
+        VERSION="$FOUND_VERSION"
+        echo ""
+        echo "Version $VERSION was automatically detected as the latest release. It will be downloaded and installed/updated."
+    fi
+else
+    echo "Defaulting to version $VERSION. This can be changed on the first line of the script."
+fi
+
+# All variables below this line can be edited to customize your installation.
 
 INSTALL_PATH="$HOME/.local/bin/"
 FILE="Stoat-linux-x64-$VERSION.zip"
+ICON_PATH="$INSTALL_PATH/Stoat-linux-x64/icon.ico"
+
+# Don't touch anything below here unless you know what you are doing.
+
 RELEASE_URL="https://github.com/stoatchat/for-desktop/releases/download/v$VERSION/Stoat-linux-x64-$VERSION.zip"
 ICON_URL="https://raw.githubusercontent.com/stoatchat/assets/refs/heads/main/desktop/icon.ico"
-ICON_PATH="$INSTALL_PATH/Stoat-linux-x64/icon.ico"
 DESKTOP_FILE="$HOME/.local/share/applications/stoat.desktop"
 
-# Don't touch anything below here unelss you know what you are doing
-
-echo "Hello, and welcome to this basic Stoat install/update script for Linux."
-echo "Please wait while script finds the latest release version..."
-VERSION=$(searchitem=$(curl -v https://github.com/stoatchat/for-desktop 2>&1 | grep -E '\<span\sclass\=\"css-truncate\scss\-truncate-target\stext-bold\smr-2"\sstyle=\"max-width\:\snone\;\">v([0-9]\.[0-9]+\.[0-9]+)<\/span\>'); grep -Po '([0-9]\.[0-9]+\.[0-9]+)' <<< $searchitem)
-if ! [[ "$VERSION" =~ [0-9]\.[0-9]+\.[0-9]+ ]]; then
-    echo "Version get failed."
-    echo "Exiting..."
-    exit
-fi
-echo "Version $VERSION was automatically detected as the latest release. It will be downloaded and installed/updated."
 echo "Be sure to have chromium and all the required dependencies installed before proceeding."
 echo ""
-read -sp "Continue ? (Y/n): " ask
+read -p "Continue ? (Y/n): " ask
 if [ "$ask" = "n" ]; then
     echo "Exiting."
     exit
 fi
-output=""
 wget -O $FILE $RELEASE_URL && echo "Downloaded $FILE" && output="success" || output="failed"
 if [ "$output" != "success" ]; then
     echo "Download failed. Check for release version or create an issue in the repo."
     rm -rf $FILE
-    echo "Exiting..."
+    echo "Exiting."
     exit
 fi
 echo "Downloaded $FILE successfully."
